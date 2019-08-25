@@ -1,30 +1,26 @@
-#define _USE_MATH_DEFINES
-
 #include "pch.h"
-#include "Player.h"
-#include <cmath>
+#include "player.h"
 
 Player::Player()
 {
-
 	m_Speed = START_SPEED;
 	m_Health = START_HEALTH;
 	m_MaxHealth = START_HEALTH;
 
 	// Associate a texture with the sprite
+	// !!Watch this space!!
 	m_Texture.loadFromFile("graphics/player.png");
 	m_Sprite.setTexture(m_Texture);
 
-	// Set the origin of the sprite to the centre,
+	// Set the origin of the sprite to the center, 
 	// for smooth rotation
 	m_Sprite.setOrigin(25, 25);
 }
 
-
 Player::~Player()
 {
-}
 
+}
 
 void Player::spawn(IntRect arena, Vector2f resolution, int tileSize)
 {
@@ -44,21 +40,17 @@ void Player::spawn(IntRect arena, Vector2f resolution, int tileSize)
 	// Store the resolution for future use
 	m_Resolution.x = resolution.x;
 	m_Resolution.y = resolution.y;
-	
+
 }
 
-// Call this at the end of every game
-void Player::resetPlayerStats()
+Time Player::getLastHitTime()
 {
-	m_Speed = START_SPEED;
-	m_Health = START_HEALTH;
-	m_MaxHealth = START_HEALTH;
+	return m_LastHit;
 }
 
-// Handle the player getting hit by a zombie
 bool Player::hit(Time timeHit)
 {
-	if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 200)
+	if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 200)// 2 tenths of second
 	{
 		m_LastHit = timeHit;
 		m_Health -= 10;
@@ -68,95 +60,97 @@ bool Player::hit(Time timeHit)
 	{
 		return false;
 	}
+
 }
 
-// How long ago was the player last hit
-Time Player::getLastHitTime()
-{
-	return m_LastHit;
-}
-
-// Where is the player?
 FloatRect Player::getPosition()
 {
 	return m_Sprite.getGlobalBounds();
 }
 
-// Where is  the center of the player
 Vector2f Player::getCenter()
 {
 	return m_Position;
 }
 
-// Which angle is the player facing
 float Player::getRotation()
 {
 	return m_Sprite.getRotation();
 }
 
-// Send a copy of the sprite to main
-Sprite Player::getSprite() 
+Sprite Player::getSprite()
 {
 	return m_Sprite;
 }
 
-// The next four functions move the player
+int Player::getHealth()
+{
+	return m_Health;
+}
+
 void Player::moveLeft()
 {
 	m_LeftPressed = true;
 }
+
 void Player::moveRight()
 {
 	m_RightPressed = true;
 }
+
 void Player::moveUp()
 {
 	m_UpPressed = true;
 }
+
 void Player::moveDown()
 {
 	m_DownPressed = true;
 }
 
-// Stop the player moving in a specific direction
 void Player::stopLeft()
 {
 	m_LeftPressed = false;
 }
+
 void Player::stopRight()
 {
 	m_RightPressed = false;
 }
+
 void Player::stopUp()
 {
 	m_UpPressed = false;
 }
+
 void Player::stopDown()
 {
 	m_DownPressed = false;
 }
 
-// We will call this function once every frame
 void Player::update(float elapsedTime, Vector2i mousePosition)
 {
+
 	if (m_UpPressed)
 	{
 		m_Position.y -= m_Speed * elapsedTime;
 	}
+
 	if (m_DownPressed)
 	{
 		m_Position.y += m_Speed * elapsedTime;
 	}
+
 	if (m_RightPressed)
 	{
 		m_Position.x += m_Speed * elapsedTime;
 	}
+
 	if (m_LeftPressed)
 	{
 		m_Position.x -= m_Speed * elapsedTime;
 	}
 
-	//Update the sprites position based on changes
 	m_Sprite.setPosition(m_Position);
 
 
@@ -182,26 +176,27 @@ void Player::update(float elapsedTime, Vector2i mousePosition)
 		m_Position.y = m_Arena.top + m_TileSize;
 	}
 
-	// Claculate the angle the player is facing
+	// Calculate the angle the player is facing
 	float angle = (atan2(mousePosition.y - m_Resolution.y / 2,
 		mousePosition.x - m_Resolution.x / 2)
-		* 180) / M_PI;
+		* 180) / 3.14159;
+
+	m_Sprite.setRotation(angle);
 }
 
-// Give the player a speed boost
-void  Player::upgradeSpeed()
+void Player::upgradeSpeed()
 {
 	// 20% speed upgrade
 	m_Speed += (START_SPEED * .2);
 }
 
-// Give the player some health
 void Player::upgradeHealth()
 {
+	// 20% max health upgrade
 	m_MaxHealth += (START_HEALTH * .2);
+
 }
 
-// Increase the maximum amount of health the player can have
 void Player::increaseHealthLevel(int amount)
 {
 	m_Health += amount;
@@ -211,11 +206,4 @@ void Player::increaseHealthLevel(int amount)
 	{
 		m_Health = m_MaxHealth;
 	}
-
-}
-
-// How much health has the player currently got?
-int Player::getHealth()
-{
-	return m_Health;
 }
