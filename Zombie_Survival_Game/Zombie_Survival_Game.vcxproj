@@ -156,11 +156,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CreateBackground.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ZombieArena.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CreateBackground.cpp" />
     <ClCompile Include="ZombieArena.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
