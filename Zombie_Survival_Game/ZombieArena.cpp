@@ -4,15 +4,20 @@
 #include "Player.h"
 #include "ZombieArena.h"
 #include "CreateBackground.h"
+#include "TextureHolder.h"
 
 using namespace sf;
 
 int main()
 {
+	// Here is the instance of TextureHolder
+	TextureHolder holder;
+
 	// The game will always be in one of four states
 	enum class State { PAUSED, LEVELING_UP, GAME_OVER, PLAYING };
 	// Start with the GAME_OVER state
 	State state = State::GAME_OVER;
+
 
 	// Get the screen resolution and create an SFML window
 	Vector2f resolution;
@@ -43,9 +48,14 @@ int main()
 
 	// Create the background
 	VertexArray background;
-	//Load the texture for our background vertex array
-	Texture textureBackground;
-	textureBackground.loadFromFile("graphics/background_sheet.png");
+	// Load the texture for our background vertex array
+	Texture textureBackground = TextureHolder::GetTexture(
+		"graphics/background_sheet.png");
+
+	// Prepare for a horde of zombies
+	int numZombies;
+	int numZombiesAlive;
+	Zombie* zombies = NULL;
 
 	// The main game loop
 	while (window.isOpen())
@@ -93,7 +103,7 @@ int main()
 		}// End event polling
 
 
-		// Handle the player quitting
+		 // Handle the player quitting
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			window.close();
@@ -141,7 +151,7 @@ int main()
 
 		}// End WASD while playing
 
-		// Handle the levelling up state
+		 // Handle the levelling up state
 		if (state == State::LEVELING_UP)
 		{
 			// Handle the player levelling up
@@ -184,23 +194,31 @@ int main()
 				arena.left = 0;
 				arena.top = 0;
 
-				//Pass the vertex array by reference
+				// Pass the vertex array by reference 
 				// to the createBackground function
 				int tileSize = createBackground(background, arena);
 
 				// Spawn the player in the middle of the arena
 				player.spawn(arena, resolution, tileSize);
 
+				// Create a horde of zombies
+				numZombies = 10;
+
+				// Delete the previously allocated memory (if it exists)
+				delete[] zombies;
+				zombies = createHorde(numZombies, arena);
+				numZombiesAlive = numZombies;
+
 				// Reset the clock so there isn't a frame jump
 				clock.restart();
 			}
 		}// End levelling up
 
-		/*
-		****************
-		UPDATE THE FRAME
-		****************
-		*/
+		 /*
+		 ****************
+		 UPDATE THE FRAME
+		 ****************
+		 */
 		if (state == State::PLAYING)
 		{
 			// Update the delta time
@@ -225,13 +243,23 @@ int main()
 
 			// Make the view centre around the player				
 			mainView.setCenter(player.getCenter());
+
+			// Loop through each Zombie and update them
+			for (int i = 0; i < numZombies; i++)
+			{
+				if (zombies[i].isAlive())
+				{
+					zombies[i].update(dt.asSeconds(), playerPosition);
+				}
+			}
+
 		}// End updating the scene
 
-		/*
-		**************
-		Draw the scene
-		**************
-		*/
+		 /*
+		 **************
+		 Draw the scene
+		 **************
+		 */
 
 		if (state == State::PLAYING)
 		{
@@ -243,6 +271,12 @@ int main()
 
 			// Draw the background
 			window.draw(background, &textureBackground);
+
+			// Draw the zombies
+			for (int i = 0; i < numZombies; i++)
+			{
+				window.draw(zombies[i].getSprite());
+			}
 
 			// Draw the player
 			window.draw(player.getSprite());
