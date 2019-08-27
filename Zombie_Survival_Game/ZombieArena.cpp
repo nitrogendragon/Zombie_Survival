@@ -72,8 +72,13 @@ int main()
 	// When was the fire button last pressed?
 	Time lastPressed;
 
-	// Making sure the mouse is visible
-	window.setMouseCursorVisible(true);
+	// Hide the mouse pointer and replace it with a crosshair
+	window.setMouseCursorVisible(false);
+	Sprite spriteCrosshair;
+	Texture textureCrosshair = TextureHolder::GetTexture("graphics/crosshair.png");
+
+	spriteCrosshair.setTexture(textureCrosshair);
+	spriteCrosshair.setOrigin(25, 25);
 
 	// How many keys are we pressing down on?
 	int keysdown = 0;
@@ -332,7 +337,9 @@ int main()
 			// Convert mouse position to world coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(
 				Mouse::getPosition(), mainView);
-			//std::cout << mouseScreenPosition.x <<", "<< mouseScreenPosition.y << endl;
+			
+			// Set the crosshair to the mouse world location
+			spriteCrosshair.setPosition(mouseWorldPosition);
 
 			// Update the player
 			player.update(dtAsSeconds, Mouse::getPosition(), twokeys);
@@ -397,6 +404,9 @@ int main()
 
 			// Draw the player
 			window.draw(player.getSprite());
+		
+			// Draw the crosshair
+			window.draw(spriteCrosshair);
 		}
 
 		if (state == State::LEVELING_UP)
