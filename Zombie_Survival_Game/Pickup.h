@@ -34,7 +34,7 @@ private:
 	// Public prototypes go here
 public:
 	Pickup(int type);
-	Pickup();
+
 	// Prepare anew pickup
 	void setArena(IntRect arena);
 

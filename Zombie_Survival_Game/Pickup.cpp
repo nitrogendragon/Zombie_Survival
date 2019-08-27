@@ -32,9 +32,7 @@ Pickup::Pickup(int type)
 }
 
 
-Pickup::~Pickup()
-{
-}
+
 
 void Pickup::setArena(IntRect arena)
 {
