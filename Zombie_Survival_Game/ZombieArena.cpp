@@ -5,6 +5,9 @@
 #include "ZombieArena.h"
 #include "CreateBackground.h"
 #include "TextureHolder.h"
+#include "Bullet.h"
+#include <iostream>
+#include <stdlib.h>
 
 using namespace sf;
 
@@ -15,9 +18,7 @@ int main()
 
 	// The game will always be in one of four states
 	enum class State { PAUSED, LEVELING_UP, GAME_OVER, PLAYING };
-	// Start with the GAME_OVER state
-	State state = State::GAME_OVER;
-
+	
 
 	// Get the screen resolution and create an SFML window
 	Vector2f resolution;
@@ -25,7 +26,10 @@ int main()
 	resolution.y = VideoMode::getDesktopMode().height;
 
 	RenderWindow window(VideoMode(resolution.x, resolution.y),
-		"Zombie Arena", Style::Fullscreen);
+		"Zombie Arena", Style::Default);
+
+	// Limit FPS to 60
+	window.setFramerateLimit(120);
 
 	// Create a an SFML View for the main action
 	View mainView(sf::FloatRect(0, 0, resolution.x, resolution.y));
@@ -56,6 +60,19 @@ int main()
 	int numZombies;
 	int numZombiesAlive;
 	Zombie* zombies = NULL;
+
+	// 100 bullets should work for now
+	Bullet bullets[100];
+	int currentBullet = 0;
+	int bulletsSpare = 24;
+	int bulletsInClip = 6;
+	int clipSize = 6;
+	float fireRate = 1;
+	// When was the fire button last pressed?
+	Time lastPressed;
+
+	// Making sure the mouse is visible
+	window.setMouseCursorVisible(true);
 
 	// The main game loop
 	while (window.isOpen())
@@ -97,6 +114,26 @@ int main()
 
 				if (state == State::PLAYING)
 				{
+					// reloading
+					if (event.key.code == Keyboard::R)
+					{
+						if (bulletsSpare >= clipSize)
+						{
+							// Plenty of bullets. Reload.
+							bulletsInClip = clipSize;
+							bulletsSpare -= clipSize;
+						}
+						else if (bulletsSpare > 0)
+						{
+							// Only a few bullets left
+							bulletsInClip = bulletsSpare;
+							bulletsSpare = 0;
+						}
+						else
+						{
+							//To be added soon
+						}
+					}
 				}
 
 			}
@@ -108,8 +145,9 @@ int main()
 		{
 			window.close();
 		}
-
+		/**********************
 		// Handle controls while playing
+		*************************/
 		if (state == State::PLAYING)
 		{
 			// Handle the pressing and releasing of the WASD keys
@@ -148,6 +186,30 @@ int main()
 			{
 				player.stopRight();
 			}
+
+			//Handle shooting bullets
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				if (gameTimeTotal.asMilliseconds() - lastPressed.asMilliseconds() > 1000 / fireRate && bulletsInClip > 0)
+				{
+					cout << "we shot again" << endl;
+					// Pass the center of the player
+					// and the centre of the cross-hair
+					// to the shoot function
+					bullets[currentBullet].shoot(
+						player.getCenter().x, player.getCenter().y,
+						mouseWorldPosition.x, mouseWorldPosition.y);
+					
+					currentBullet++;
+					if (currentBullet > 99)
+					{
+						currentBullet = 0;
+					}
+					lastPressed = gameTimeTotal;
+
+					bulletsInClip--;
+				}
+			} // End shooting bullet
 
 		}// End WASD while playing
 
@@ -230,10 +292,12 @@ int main()
 
 			// Where is the mouse pointer
 			mouseScreenPosition = Mouse::getPosition();
+			
 
 			// Convert mouse position to world coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(
 				Mouse::getPosition(), mainView);
+			//std::cout << mouseScreenPosition.x <<", "<< mouseScreenPosition.y << endl;
 
 			// Update the player
 			player.update(dtAsSeconds, Mouse::getPosition());
@@ -250,6 +314,15 @@ int main()
 				if (zombies[i].isAlive())
 				{
 					zombies[i].update(dt.asSeconds(), playerPosition);
+				}
+			}
+
+			// Update any bullets that are in-flight
+			for (int i = 0; i < 100; i++)
+			{
+				if (bullets[i].isInFlight())
+				{
+					bullets[i].update(dtAsSeconds);
 				}
 			}
 
@@ -278,6 +351,15 @@ int main()
 				window.draw(zombies[i].getSprite());
 			}
 
+			// Draw the bullets
+			for (int i = 0; i < 100; i++)
+			{
+				if (bullets[i].isInFlight())
+				{
+					window.draw(bullets[i].getShape());
+				}
+			}
+
 			// Draw the player
 			window.draw(player.getSprite());
 		}
@@ -295,6 +377,8 @@ int main()
 		}
 
 		window.display();
+		
+		
 
 	}// End game loop
 

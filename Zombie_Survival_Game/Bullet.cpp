@@ -1,6 +1,9 @@
+#pragma once
 #include "pch.h"
 #include "Bullet.h"
 #include <cmath>
+#include <iostream>
+#include <stdlib.h>
 
 Bullet::Bullet()
 {
@@ -15,8 +18,12 @@ void Bullet::shoot(float startX, float startY, float targetX, float targetY)
 	m_InFlight = true;
 	// We shoot the bullet before anything else so it is ok to initialize 
 	// Starting positions here though maybe doing something in the constructor would be a good idea too.
-	m_Position.x, m_startX = startX;
-	m_Position.y, m_startY = startY;
+	
+	m_Position.x = startX;
+	m_startX = startX;
+	m_Position.y = startY;
+	m_startY = startY;
+	std::cout << m_Position.x << ", " << m_Position.y << "\n";
 
 	// Calculate the gradient of the flight path
 	float gradient = (startX - targetX) / (startY - targetY);
@@ -35,6 +42,7 @@ void Bullet::shoot(float startX, float startY, float targetX, float targetY)
 	m_BulletDistanceX = ratioXY * gradient;
 
 	// Point the bullet in the right direction
+	
 	if (targetX < startX)
 	{
 		m_BulletDistanceX *= -1;
@@ -45,6 +53,10 @@ void Bullet::shoot(float startX, float startY, float targetX, float targetY)
 		m_BulletDistanceY *= -1;
 	}
 
+	// Finally, assign the results to the member variables
+	m_targetY = targetY;
+	m_targetX = targetX;
+
 	// Set a max m_range the bullet can travel in pixels
 	m_range = 1000;
 	m_MinX = startX - m_range;
@@ -54,6 +66,7 @@ void Bullet::shoot(float startX, float startY, float targetX, float targetY)
 
 	// Position the bullet so it is ready to be drawn
 	m_BulletShape.setPosition(m_Position);
+	
 
 }
 
@@ -79,7 +92,7 @@ RectangleShape Bullet::getShape()
 
 float Bullet::distanceTraveled(float startX, float startY, float endX, float endY)
 {
-	return sqrt(pow(endX - startX, 2) + pow(endY - startY, 2) * 1.0);
+	return sqrt(pow(abs(endX) - startX, 2) + pow(abs(endY) - startY, 2) * 1.0);
 }
 
 void Bullet::update(float elapsedTime)

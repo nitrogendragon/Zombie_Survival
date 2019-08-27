@@ -28,6 +28,10 @@ private:
 	float m_startX;
 	float m_startY;
 
+	// Where is the bullet heading to?
+	float m_targetX;
+	float m_targetY;
+
 	//set the range of the bullet
 	float m_range = 1000;
 
@@ -42,8 +46,9 @@ private:
 public:
 
 	Bullet();
+
 	// general function for measuring distance in floats between two points
-	float distanceTraveled(float startX, float startY, float endX, float endY);
+	float distanceTraveled(float startX, float startY, float targetX, float targetY);
 
 	//stop the bullet
 	void stop();
