@@ -75,6 +75,9 @@ int main()
 	// Making sure the mouse is visible
 	window.setMouseCursorVisible(true);
 
+	// How many keys are we pressing down on?
+	int keysdown = 0;
+	bool twokeys = false;
 	// The main game loop
 	while (window.isOpen())
 	{
@@ -151,10 +154,15 @@ int main()
 		*************************/
 		if (state == State::PLAYING)
 		{
+			//reset fror new loop
+			keysdown = 0;
+			twokeys = false;
+
 			// Handle the pressing and releasing of the WASD keys
 			if (Keyboard::isKeyPressed(Keyboard::W))
 			{
 				player.moveUp();
+				keysdown++;
 			}
 			else
 			{
@@ -164,6 +172,16 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::S))
 			{
 				player.moveDown();
+
+				// Making sure our other vertical movement key isn't pressed
+				if (Keyboard::isKeyPressed(Keyboard::W))
+				{
+					//dont want to increment here
+				}
+				else
+				{
+					keysdown++;
+				}
 			}
 			else
 			{
@@ -173,6 +191,7 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::A))
 			{
 				player.moveLeft();
+				keysdown++;
 			}
 			else
 			{
@@ -182,10 +201,25 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::D))
 			{
 				player.moveRight();
+				
+				// Making sure our other Horizontal movement key isn't pressed
+				if (Keyboard::isKeyPressed(Keyboard::A))
+				{
+					//dont want to increment here
+				}
+				else
+				{
+					keysdown++;
+				}
 			}
 			else
 			{
 				player.stopRight();
+			}
+			//we will use this to determine whether we normalize the player speed.
+			if (keysdown >= 2)
+			{
+				twokeys = true;
 			}
 
 			//Handle shooting bullets
@@ -301,7 +335,7 @@ int main()
 			//std::cout << mouseScreenPosition.x <<", "<< mouseScreenPosition.y << endl;
 
 			// Update the player
-			player.update(dtAsSeconds, Mouse::getPosition());
+			player.update(dtAsSeconds, Mouse::getPosition(), twokeys);
 
 			// Make a note of the players new position
 			Vector2f playerPosition(player.getCenter());

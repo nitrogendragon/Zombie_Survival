@@ -128,27 +128,43 @@ void Player::stopDown()
 	m_DownPressed = false;
 }
 
-void Player::update(float elapsedTime, Vector2i mousePosition)
+void Player::update(float elapsedTime, Vector2i mousePosition, bool twokeys)
 {
+	//use this for x movement
+	//fabs(sin(Player::getRotation())
 
+	//use this for y movement
+	//fabs(sin(Player::getRotation())
+
+	if (twokeys)
+	{
+		//standard 45 degree angle movement modifier
+		m_Magnitude = .7071;
+	}
+	else
+	{
+		m_Magnitude = 1;
+	}
+	
+	
 	if (m_UpPressed)
 	{
-		m_Position.y -= m_Speed * elapsedTime;
+		m_Position.y -= m_Speed * elapsedTime * m_Magnitude;
 	}
 
 	if (m_DownPressed)
 	{
-		m_Position.y += m_Speed * elapsedTime;
+		m_Position.y += m_Speed * elapsedTime * m_Magnitude;
 	}
 
 	if (m_RightPressed)
 	{
-		m_Position.x += m_Speed * elapsedTime;
+		m_Position.x += m_Speed * elapsedTime * m_Magnitude;
 	}
 
 	if (m_LeftPressed)
 	{
-		m_Position.x -= m_Speed * elapsedTime;
+		m_Position.x -= m_Speed * elapsedTime * m_Magnitude;
 	}
 
 	m_Sprite.setPosition(m_Position);

@@ -33,6 +33,16 @@ private:
 
 	// is it still alive?
 	bool m_Alive;
+
+	//are we moving left right up down?
+	bool m_Right = false;
+	bool m_Left = false;
+	bool m_Down = false;
+	bool m_Up = false;
+
+	// number of directions we are moving in 
+	//(question is... are we moving in one or two directions?)
+	int m_TwoD = 0;
 	// Public prototypes go here
 public:
 

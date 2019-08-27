@@ -26,6 +26,9 @@ private:
 	// What is the size of each tile of the arena?
 	int m_TileSize;
 
+	// What is the magnitude (for adjusting the player speed.
+	float m_Magnitude = 1;
+
 	// Which direction is the player moving?
 	bool m_UpPressed;
 	bool m_DownPressed;
@@ -91,7 +94,7 @@ public:
 	void stopDown();
 
 	// We will call this function once every frame
-	void update(float elapsedTime, Vector2i mousePosition);
+	void update(float elapsedTime, Vector2i mousePosition, bool twokeys = false);
 
 	// Give the player a speed boost
 	void  upgradeSpeed();
