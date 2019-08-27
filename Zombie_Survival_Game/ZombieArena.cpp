@@ -124,7 +124,7 @@ int main()
 				if (state == State::PLAYING)
 				{
 					// reloading
-					if (event.key.code == Keyboard::R)
+					if (event.key.code == (sf::Mouse::isButtonPressed(sf::Mouse::Right)))
 					{
 						if (bulletsSpare >= clipSize)
 						{
