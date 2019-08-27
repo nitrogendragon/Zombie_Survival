@@ -23,7 +23,6 @@ void Bullet::shoot(float startX, float startY, float targetX, float targetY)
 	m_startX = startX;
 	m_Position.y = startY;
 	m_startY = startY;
-	std::cout << m_Position.x << ", " << m_Position.y << "\n";
 
 	// Calculate the gradient of the flight path
 	float gradient = (startX - targetX) / (startY - targetY);
@@ -93,21 +92,25 @@ RectangleShape Bullet::getShape()
 float Bullet::distanceTraveled(float startX, float startY, float endX, float endY)
 {
 	return sqrt(pow(abs(endX) - startX, 2) + pow(abs(endY) - startY, 2) * 1.0);
+	
 }
 
 void Bullet::update(float elapsedTime)
 {
+	
 	// Update the bullet position variables
 	m_Position.x += m_BulletDistanceX * elapsedTime;
 	m_Position.y += m_BulletDistanceY * elapsedTime;
 
 	// Move the bullet
 	m_BulletShape.setPosition(m_Position);
-
+	
 	// Has the bullet gone out of m_range?
-	if (distanceTraveled(m_startX, m_startY, m_BulletDistanceX, m_BulletDistanceY) > m_range )
+	if (distanceTraveled(m_startX, m_startY, m_Position.x, m_Position.y) > m_range )
 	{
+		std::cout << distanceTraveled(m_startX, m_startY, m_BulletDistanceX, m_BulletDistanceY) << "\n";
 		m_InFlight = false;
+		std::cout<< "it ended" << "\n";
 	}
 
 }

@@ -6,6 +6,7 @@
 #include "CreateBackground.h"
 #include "TextureHolder.h"
 #include "Bullet.h"
+#include "Pickup.h"
 #include <iostream>
 #include <stdlib.h>
 
@@ -83,7 +84,15 @@ int main()
 	// How many keys are we pressing down on?
 	int keysdown = 0;
 	bool twokeys = false;
-	// The main game loop
+
+	//Create a couple pickups
+	Pickup healthPickup(1);
+	Pickup ammoPickup(2);
+	/********************************************
+	********************************************
+	THE MAIN GAME LOOP
+	********************************************
+	********************************************/
 	while (window.isOpen())
 	{
 		/*
@@ -232,7 +241,7 @@ int main()
 			{
 				if (gameTimeTotal.asMilliseconds() - lastPressed.asMilliseconds() > 1000 / fireRate && bulletsInClip > 0)
 				{
-					cout << "we shot again" << endl;
+					
 					// Pass the center of the player
 					// and the centre of the cross-hair
 					// to the shoot function
@@ -303,6 +312,10 @@ int main()
 				// Spawn the player in the middle of the arena
 				player.spawn(arena, resolution, tileSize);
 
+				// Configure the pickups
+				healthPickup.setArena(arena);
+				ammoPickup.setArena(arena);
+
 				// Create a horde of zombies
 				numZombies = 10;
 
@@ -368,6 +381,10 @@ int main()
 				}
 			}
 
+			// Update the pickups
+			healthPickup.update(dtAsSeconds);
+			ammoPickup.update(dtAsSeconds);
+
 		}// End updating the scene
 
 		 /*
@@ -404,6 +421,13 @@ int main()
 
 			// Draw the player
 			window.draw(player.getSprite());
+
+			// Draw the pick-ups, if currently spawned
+			if (ammoPickup.isSpawned())
+			{
+				window.draw(ammoPickup.getSprite());
+				window.draw(healthPickup.getSprite());
+			}
 		
 			// Draw the crosshair
 			window.draw(spriteCrosshair);
