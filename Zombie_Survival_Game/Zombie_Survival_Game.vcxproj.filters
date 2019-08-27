@@ -36,6 +36,9 @@
     <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
