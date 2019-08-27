@@ -18,7 +18,8 @@ int main()
 
 	// The game will always be in one of four states
 	enum class State { PAUSED, LEVELING_UP, GAME_OVER, PLAYING };
-	
+	// Start with the GAME_OVER state
+	State state = State::GAME_OVER;
 
 	// Get the screen resolution and create an SFML window
 	Vector2f resolution;
