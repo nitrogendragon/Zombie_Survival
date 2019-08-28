@@ -31,7 +31,7 @@ int main()
 		"Zombie Arena", Style::Default);
 
 	// Limit FPS to 60
-	window.setFramerateLimit(120);
+	window.setFramerateLimit(90);
 
 	// Create a an SFML View for the main action
 	View mainView(sf::FloatRect(0, 0, resolution.x, resolution.y));
@@ -64,7 +64,8 @@ int main()
 	Zombie* zombies = NULL;
 
 	// 100 bullets should work for now
-	Bullet bullets[100];
+	const int totalbullets = 100;
+	Bullet bullets[totalbullets];
 	int currentBullet = 0;
 	int bulletsSpare = 24;
 	int bulletsInClip = 6;
@@ -88,6 +89,12 @@ int main()
 	//Create a couple pickups
 	Pickup healthPickup(1);
 	Pickup ammoPickup(2);
+
+	//About the game
+	int score = 0;
+	int highScore = 0;
+
+
 	/********************************************
 	********************************************
 	THE MAIN GAME LOOP
@@ -133,7 +140,7 @@ int main()
 				if (state == State::PLAYING)
 				{
 					// reloading
-					if (event.key.code == (sf::Mouse::isButtonPressed(sf::Mouse::Right)))
+					if (event.key.code == Keyboard::R || sf::Mouse::isButtonPressed(sf::Mouse::Left))
 					{
 						if (bulletsSpare >= clipSize)
 						{
@@ -293,7 +300,7 @@ int main()
 
 			if (event.key.code == Keyboard::Num6)
 			{
-				state = State::PLAYING;
+			state = State::PLAYING;
 			}
 
 			if (state == State::PLAYING)
@@ -345,12 +352,12 @@ int main()
 
 			// Where is the mouse pointer
 			mouseScreenPosition = Mouse::getPosition();
-			
+
 
 			// Convert mouse position to world coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(
 				Mouse::getPosition(), mainView);
-			
+
 			// Set the crosshair to the mouse world location
 			spriteCrosshair.setPosition(mouseWorldPosition);
 
@@ -384,6 +391,84 @@ int main()
 			// Update the pickups
 			healthPickup.update(dtAsSeconds);
 			ammoPickup.update(dtAsSeconds);
+
+			// Collision detection
+			// Have any zombies been shot?
+			for (int i = 0; i < 100; i++)
+			{
+				for (int j = 0; j < numZombies; j++)
+				{
+					if (bullets[i].isInFlight() &&
+						zombies[j].isAlive())
+					{
+						if (bullets[i].getPosition().intersects
+						(zombies[j].getPosition()))
+						{
+							// Stop the bullet
+							bullets[i].stop();
+
+							// Register the hit and see if it was a kill
+							if (zombies[j].hit()) {
+								// Not just a hit but a kill too
+								score += 10;
+								if (score >= highScore)
+								{
+									highScore = score;
+								}
+
+								numZombiesAlive--;
+
+								// When all the zombies are dead (again)
+								if (numZombiesAlive == 0) {
+									state = State::LEVELING_UP;
+								}
+							}
+
+						}
+					}
+
+				}
+			}// End zombie being shot
+
+			//Have any zombies touched the player			
+			for (int i = 0; i < numZombies; i++)
+			{
+				if (player.getPosition().intersects
+				(zombies[i].getPosition()) && zombies[i].isAlive())
+				{
+
+					//if (player.hit(gameTimeTotal))
+					//{
+					//	 //More here later
+					//	//std::cout << "We were hit" << endl;
+					//}
+
+					if (player.getHealth() <= 0)
+					{
+						state = State::GAME_OVER;
+
+					}
+				}
+			}// End player touched
+
+			 // Has the player touched health pickup
+			if (player.getPosition().intersects
+			(healthPickup.getPosition()) && healthPickup.isSpawned())
+			{
+				std::cout << "We got some health back" << endl;
+				player.increaseHealthLevel(healthPickup.gotIt());
+
+			}
+
+			// Has the player touched ammo pickup
+			if (player.getPosition().intersects
+			(ammoPickup.getPosition()) && ammoPickup.isSpawned())
+			{
+				std::cout << "We got some bullets back" << endl;
+				bulletsSpare += ammoPickup.gotIt();
+
+			}
+			
 
 		}// End updating the scene
 
@@ -426,6 +511,10 @@ int main()
 			if (ammoPickup.isSpawned())
 			{
 				window.draw(ammoPickup.getSprite());
+				
+			}
+			if (healthPickup.isSpawned())
+			{
 				window.draw(healthPickup.getSprite());
 			}
 		
@@ -450,6 +539,6 @@ int main()
 		
 
 	}// End game loop
-
+	
 	return 0;
 }
