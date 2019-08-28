@@ -99,9 +99,10 @@ int main()
 	// For the home/game over screen
 	Sprite spriteGameOver;
 	Texture textureGameOver =
-		TextureHolder::GetTexture("graphics/background1.png");
+		TextureHolder::GetTexture("graphics/background.png");
 	spriteGameOver.setTexture(textureGameOver);
 	spriteGameOver.setPosition(0, 0);
+	spriteGameOver.setScale(1.5, 1);
 
 	// Create a view for the HUD
 	View hudView(sf::FloatRect(0, 0, resolution.x, resolution.y));
@@ -128,7 +129,7 @@ int main()
 	Text gameOverText;
 	gameOverText.setFont(font);
 	gameOverText.setCharacterSize(80);
-	gameOverText.setPosition(280, 540);
+	gameOverText.setPosition(280, 640);
 	gameOverText.setString("Press Enter to play");
 
 	// Leveling up
@@ -543,11 +544,11 @@ int main()
 				(zombies[i].getPosition()) && zombies[i].isAlive())
 				{
 
-					//if (player.hit(gameTimeTotal))
-					//{
-					//	 //More here later
-					//	//std::cout << "We were hit" << endl;
-					//}
+					if (player.hit(gameTimeTotal))
+					{
+						 //More here later
+						//std::cout << "We were hit" << endl;
+					}
 
 					if (player.getHealth() <= 0)
 					{
@@ -581,9 +582,9 @@ int main()
 			// Increment the number of frames sinc ethe last HUD calculation
 			framesSinceLastHUDUpdate++;
 			//Calculate FPS every ffpsMeasurementFrameInterval frame
-			if (framesSinceLastHUDUpdate >> fpsMeasurementFrameInterval)
+			if (framesSinceLastHUDUpdate > fpsMeasurementFrameInterval)
 			{
-
+				std::cout << "we are updating the HUD" << endl;
 				// Update the HUD text
 				std::stringstream ssAmmo;
 				std::stringstream ssScore;
@@ -596,7 +597,7 @@ int main()
 				ammoText.setString(ssAmmo.str());
 
 				// Update the score text
-				ssScore << "SCore: " << score;
+				ssScore << "Score: " << score;
 				scoreText.setString(ssScore.str());
 
 				// Update the high score text
@@ -665,18 +666,37 @@ int main()
 		
 			// Draw the crosshair
 			window.draw(spriteCrosshair);
+
+			// Switch to the HUD view
+			window.setView(hudView);
+
+			// Draw all the HUD elements
+			window.draw(spriteAmmoIcon);
+			window.draw(ammoText);
+			window.draw(scoreText);
+			window.draw(highScoreText);
+			window.draw(healthBar);
+			window.draw(waveNumberText);
+			window.draw(zombiesRemainingText);
 		}
 
 		if (state == State::LEVELING_UP)
 		{
+			window.draw(spriteGameOver);
+			window.draw(levelUpText);
 		}
 
 		if (state == State::PAUSED)
 		{
+			window.draw(pausedText);
 		}
 
 		if (state == State::GAME_OVER)
 		{
+			window.draw(spriteGameOver);
+			window.draw(gameOverText);
+			window.draw(scoreText);
+			window.draw(highScoreText);
 		}
 
 		window.display();
