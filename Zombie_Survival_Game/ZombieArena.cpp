@@ -247,13 +247,14 @@ int main()
 				if (state == State::PLAYING)
 				{
 					// reloading
-					if (event.key.code == Keyboard::R || sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					if (event.key.code == Keyboard::R || event.key.code == sf::Mouse::isButtonPressed(sf::Mouse::Right))
 					{
 						if (bulletsSpare >= clipSize)
 						{
 							// Plenty of bullets. Reload.
+							bulletsSpare -= clipSize - bulletsInClip;
 							bulletsInClip = clipSize;
-							bulletsSpare -= clipSize;
+							
 						}
 						else if (bulletsSpare > 0)
 						{
