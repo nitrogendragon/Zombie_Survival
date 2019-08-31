@@ -94,6 +94,7 @@ int main()
 
 	// Hide the mouse pointer and replace it with a crosshair
 	window.setMouseCursorVisible(false);
+	
 	Sprite spriteCrosshair;
 	Texture textureCrosshair = TextureHolder::GetTexture("graphics/crosshair.png");
 
