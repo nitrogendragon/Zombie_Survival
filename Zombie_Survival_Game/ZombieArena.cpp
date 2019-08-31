@@ -34,7 +34,7 @@ int main()
 	float screenScaleH = .5;
 	float screenScaleW = .5;
 	//Going to use for scaling text for now
-	int screenScaleAvg = (int)floor(screenScaleH + screenScaleW) / 2;
+	float screenScaleAvg = (screenScaleH + screenScaleW) / 2;
 	//assert(screenScaleAvg == 1);
 
 	//Scaled resolutions
@@ -118,8 +118,9 @@ int main()
 	Texture textureGameOver =
 		TextureHolder::GetTexture("graphics/background.png");
 	spriteGameOver.setTexture(textureGameOver);
+	spriteGameOver.setScale(scaleObjectX(screenScaleW, 1.5), scaleObjectY(screenScaleH, 1));
 	spriteGameOver.setPosition(0, 0);
-	spriteGameOver.setScale(scaleObjectX(screenScaleW, 1.5), scaleObjectY(screenScaleH,1));
+	
 
 	// Create a view for the HUD
 	View hudView(sf::FloatRect(0, 0, scaledResolutionX, scaledResolutionY));
@@ -129,8 +130,9 @@ int main()
 	Texture textureAmmoIcon = TextureHolder::GetTexture("graphics/ammo_icon.png");
 	spriteAmmoIcon.setTexture(textureAmmoIcon);
 	//spriteAmmoIcon.setPosition(28, 620);
-	spriteAmmoIcon.setPosition(scaledPositionSetX(.1,scaledResolutionX), scaledPositionSetY(.9,scaledResolutionY));
 	spriteAmmoIcon.setScale(screenScaleW, screenScaleH);
+	spriteAmmoIcon.setPosition(scaledPositionSetX(.1,scaledResolutionX), scaledPositionSetY(.9,scaledResolutionY));
+	
 	// Load our font
 	Font font;
 	font.loadFromFile("fonts/zombiecontrol.ttf");
@@ -138,24 +140,22 @@ int main()
 	// Paused Text pausedText;
 	Text pausedText;
 	pausedText.setFont(font);
-	pausedText.setCharacterSize(85*screenScaleAvg);
+	pausedText.setCharacterSize((int)floor(85*screenScaleAvg));
 	pausedText.setFillColor(Color::White);
-	//pausedText.setPosition(350, 200);
 	pausedText.setPosition(scaledPositionSetX(.4, scaledResolutionX), scaledPositionSetY(.45, scaledResolutionY));
 	pausedText.setString("Prees Enter \nto continue");
 
 	// Game Over
 	Text gameOverText;
 	gameOverText.setFont(font);
-	gameOverText.setCharacterSize(80*screenScaleAvg);
-	//gameOverText.setPosition(280, 640);
+	gameOverText.setCharacterSize((int)floor(80*screenScaleAvg));
 	gameOverText.setPosition(scaledPositionSetX(.375, scaledResolutionX), scaledPositionSetY(.45, scaledResolutionY));
 	gameOverText.setString("Press Enter to play");
 
 	// Leveling up
 	Text levelUpText;
 	levelUpText.setFont(font);
-	levelUpText.setCharacterSize(60*screenScaleAvg);
+	levelUpText.setCharacterSize((int)floor(60*screenScaleAvg));
 	levelUpText.setFillColor(Color::White);
 	//levelUpText.setPosition(80, 150);
 	levelUpText.setPosition(scaledPositionSetX(.25, scaledResolutionX), scaledPositionSetY(.1, scaledResolutionY));
@@ -174,7 +174,7 @@ int main()
 	// Ammo
 	Text ammoText;
 	ammoText.setFont(font);
-	ammoText.setCharacterSize(50*screenScaleAvg);
+	ammoText.setCharacterSize((int)floor(50*screenScaleAvg));
 	ammoText.setFillColor(Color::White);
 	//ammoText.setPosition(116, 620);
 	ammoText.setPosition(scaledPositionSetX(.04, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
@@ -182,7 +182,7 @@ int main()
 	// Score
 	Text scoreText;
 	scoreText.setFont(font);
-	scoreText.setCharacterSize(50*screenScaleAvg);
+	scoreText.setCharacterSize((int)floor(50*screenScaleAvg));
 	scoreText.setFillColor(Color::White);
 	//scoreText.setPosition(20, 0);
 	scoreText.setPosition(scaledPositionSetX(.05, scaledResolutionX), scaledPositionSetY(0, scaledResolutionY));
@@ -190,7 +190,7 @@ int main()
 	// High Score
 	Text highScoreText;
 	highScoreText.setFont(font);
-	highScoreText.setCharacterSize(50 * screenScaleAvg);
+	highScoreText.setCharacterSize((int)floor(50 * screenScaleAvg));
 	highScoreText.setFillColor(Color::White);
 	//highScoreText.setPosition(980, 0);
 	highScoreText.setPosition(scaledPositionSetX(.75, scaledResolutionX), scaledPositionSetY(0, scaledResolutionY));
@@ -201,7 +201,7 @@ int main()
 	// Zombies remaining
 	Text zombiesRemainingText;
 	zombiesRemainingText.setFont(font);
-	zombiesRemainingText.setCharacterSize(50 * screenScaleAvg);
+	zombiesRemainingText.setCharacterSize((int)floor(50 * screenScaleAvg));
 	zombiesRemainingText.setFillColor(Color::White);
 	//zombiesRemainingText.setPosition(975, 620);
 	zombiesRemainingText.setPosition(scaledPositionSetX(.5, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
@@ -211,7 +211,7 @@ int main()
 	int wave = 0;
 	Text waveNumberText;
 	waveNumberText.setFont(font);
-	waveNumberText.setCharacterSize(50 * screenScaleAvg);
+	waveNumberText.setCharacterSize((int)floor(50 * screenScaleAvg));
 	waveNumberText.setFillColor(Color::Red);
 	//waveNumberText.setPosition(750, 620);
 	waveNumberText.setPosition(scaledPositionSetX(.4, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
