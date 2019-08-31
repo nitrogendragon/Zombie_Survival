@@ -31,8 +31,8 @@ int main()
 	resolution.y = VideoMode::getDesktopMode().height;
 
 	//Scale factors for whenever we decide to change the screen size
-	float screenScaleH = 1;
-	float screenScaleW = 1;
+	float screenScaleH = .5;
+	float screenScaleW = .5;
 	//Going to use for scaling text for now
 	int screenScaleAvg = (int)floor(screenScaleH + screenScaleW) / 2;
 	//assert(screenScaleAvg == 1);
@@ -448,8 +448,8 @@ int main()
 			{
 				// Prepare thelevel
 				// We will modify the next two lines later
-				arena.width = 1000;
-				arena.height = 1000;
+				arena.width = 1000 * screenScaleW;
+				arena.height = 1000 * screenScaleH;
 				arena.left = 0;
 				arena.top = 0;
 
