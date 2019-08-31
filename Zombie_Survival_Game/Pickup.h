@@ -36,7 +36,7 @@ public:
 	Pickup(int type);
 
 	// Prepare anew pickup
-	void setArena(IntRect arena);
+	void setArena(IntRect arena, float screenScaleW, float screenScaleH);
 
 	void spawn();
 

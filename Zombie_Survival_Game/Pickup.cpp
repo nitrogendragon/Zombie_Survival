@@ -32,14 +32,14 @@ Pickup::Pickup(int type)
 	m_SecondsToWait = START_WAIT_TIME;
 }
 
-void Pickup::setArena(IntRect arena)
+void Pickup::setArena(IntRect arena, float screenScaleW, float screenScaleH)
 {
 
 	// Copy the details of the arena to the pickup's m_Arena
-	m_Arena.left = arena.left + 50;
-	m_Arena.width = arena.width - 50;
-	m_Arena.top = arena.top + 50;
-	m_Arena.height = arena.height - 50;
+	m_Arena.left = arena.left + 50*screenScaleW;
+	m_Arena.width = arena.width - 50*screenScaleW;
+	m_Arena.top = arena.top + 50*screenScaleH;
+	m_Arena.height = arena.height - 50*screenScaleH;
 
 	spawn();
 }
@@ -58,6 +58,7 @@ void Pickup::spawn()
 	m_Spawned = true;
 
 	m_Sprite.setPosition(x, y);
+	
 }
 
 FloatRect Pickup::getPosition()

@@ -10,6 +10,7 @@
 #include "Pickup.h"
 #include <iostream>
 #include <stdlib.h>
+#include <assert.h>
 
 
 using namespace sf;
@@ -29,7 +30,18 @@ int main()
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
 
-	RenderWindow window(VideoMode(resolution.x/2, resolution.y/2),
+	//Scale factors for whenever we decide to change the screen size
+	float screenScaleH = 1;
+	float screenScaleW = 1;
+	//Going to use for scaling text for now
+	int screenScaleAvg = (int)floor(screenScaleH + screenScaleW) / 2;
+	//assert(screenScaleAvg == 1);
+
+	//Scaled resolutions
+	float scaledResolutionX = resolution.x * screenScaleW;
+	float scaledResolutionY = resolution.y * screenScaleH;
+
+	RenderWindow window(VideoMode(scaledResolutionX, scaledResolutionY),
 		"Zombie Arena", Style::Default);
 
 	// Limit FPS 
@@ -37,7 +49,7 @@ int main()
 	window.setFramerateLimit(frameRate);
 
 	// Create a an SFML View for the main action
-	View mainView(sf::FloatRect(0, 0, resolution.x, resolution.y));
+	View mainView(sf::FloatRect(0, 0, scaledResolutionX, scaledResolutionY));
 
 	// Here is our clock for timing everything
 	Clock clock;
@@ -49,8 +61,11 @@ int main()
 	// Where is the mouse in relation to screen coordinates
 	Vector2i mouseScreenPosition;
 
-	// Create an instance of the Player class
+	// Create an instance of the Player class and scale it to the screen
 	Player player;
+	player.setPlayerScaleX(screenScaleW);
+	player.setPlayerScaleY(screenScaleH);
+	player.updateSpriteScale();
 
 	// The boundaries of the arena
 	IntRect arena;
@@ -84,6 +99,7 @@ int main()
 
 	spriteCrosshair.setTexture(textureCrosshair);
 	spriteCrosshair.setOrigin(25, 25);
+	spriteCrosshair.setScale(screenScaleW, screenScaleH);
 
 	// How many keys are we pressing down on?
 	int keysdown = 0;
@@ -103,17 +119,18 @@ int main()
 		TextureHolder::GetTexture("graphics/background.png");
 	spriteGameOver.setTexture(textureGameOver);
 	spriteGameOver.setPosition(0, 0);
-	spriteGameOver.setScale(1.5, 1);
+	spriteGameOver.setScale(scaleObjectX(screenScaleW, 1.5), scaleObjectY(screenScaleH,1));
 
 	// Create a view for the HUD
-	View hudView(sf::FloatRect(0, 0, resolution.x, resolution.y));
+	View hudView(sf::FloatRect(0, 0, scaledResolutionX, scaledResolutionY));
 
 	// Create a sprite for the ammo icon
 	Sprite spriteAmmoIcon;
 	Texture textureAmmoIcon = TextureHolder::GetTexture("graphics/ammo_icon.png");
 	spriteAmmoIcon.setTexture(textureAmmoIcon);
-	spriteAmmoIcon.setPosition(28, 620);
-
+	//spriteAmmoIcon.setPosition(28, 620);
+	spriteAmmoIcon.setPosition(scaledPositionSetX(.1,scaledResolutionX), scaledPositionSetY(.9,scaledResolutionY));
+	spriteAmmoIcon.setScale(screenScaleW, screenScaleH);
 	// Load our font
 	Font font;
 	font.loadFromFile("fonts/zombiecontrol.ttf");
@@ -121,28 +138,32 @@ int main()
 	// Paused Text pausedText;
 	Text pausedText;
 	pausedText.setFont(font);
-	pausedText.setCharacterSize(85);
+	pausedText.setCharacterSize(85*screenScaleAvg);
 	pausedText.setFillColor(Color::White);
-	pausedText.setPosition(350, 200);
+	//pausedText.setPosition(350, 200);
+	pausedText.setPosition(scaledPositionSetX(.4, scaledResolutionX), scaledPositionSetY(.45, scaledResolutionY));
 	pausedText.setString("Prees Enter \nto continue");
 
 	// Game Over
 	Text gameOverText;
 	gameOverText.setFont(font);
-	gameOverText.setCharacterSize(80);
-	gameOverText.setPosition(280, 640);
+	gameOverText.setCharacterSize(80*screenScaleAvg);
+	//gameOverText.setPosition(280, 640);
+	gameOverText.setPosition(scaledPositionSetX(.375, scaledResolutionX), scaledPositionSetY(.45, scaledResolutionY));
 	gameOverText.setString("Press Enter to play");
 
 	// Leveling up
 	Text levelUpText;
 	levelUpText.setFont(font);
-	levelUpText.setCharacterSize(60);
+	levelUpText.setCharacterSize(60*screenScaleAvg);
 	levelUpText.setFillColor(Color::White);
-	levelUpText.setPosition(80, 150);
+	//levelUpText.setPosition(80, 150);
+	levelUpText.setPosition(scaledPositionSetX(.25, scaledResolutionX), scaledPositionSetY(.1, scaledResolutionY));
 	std::stringstream levelUpStream;
 	levelUpStream <<
-		"Press a number key correlating to the desired upgrade" << endl <<
-		"1-Increased rate of fire" << endl <<
+		"         Press a number key correlating" << endl <<
+		"              to the desired upgrade" << endl << endl <<
+		"1- Increased rate of fire" << endl <<
 		"2- Increased clip size (next reload)" << endl <<
 		"3- Increased max health" << endl <<
 		"4- Increased run speed" << endl <<
@@ -153,23 +174,26 @@ int main()
 	// Ammo
 	Text ammoText;
 	ammoText.setFont(font);
-	ammoText.setCharacterSize(50);
+	ammoText.setCharacterSize(50*screenScaleAvg);
 	ammoText.setFillColor(Color::White);
-	ammoText.setPosition(116, 620);
+	//ammoText.setPosition(116, 620);
+	ammoText.setPosition(scaledPositionSetX(.04, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
 
 	// Score
 	Text scoreText;
 	scoreText.setFont(font);
-	scoreText.setCharacterSize(50);
+	scoreText.setCharacterSize(50*screenScaleAvg);
 	scoreText.setFillColor(Color::White);
-	scoreText.setPosition(20, 0);
+	//scoreText.setPosition(20, 0);
+	scoreText.setPosition(scaledPositionSetX(.05, scaledResolutionX), scaledPositionSetY(0, scaledResolutionY));
 
 	// High Score
 	Text highScoreText;
 	highScoreText.setFont(font);
-	highScoreText.setCharacterSize(50);
+	highScoreText.setCharacterSize(50 * screenScaleAvg);
 	highScoreText.setFillColor(Color::White);
-	highScoreText.setPosition(980, 0);
+	//highScoreText.setPosition(980, 0);
+	highScoreText.setPosition(scaledPositionSetX(.75, scaledResolutionX), scaledPositionSetY(0, scaledResolutionY));
 	std::stringstream s;
 	s << "HighScore:" << highScore;
 	highScoreText.setString(s.str());
@@ -177,24 +201,32 @@ int main()
 	// Zombies remaining
 	Text zombiesRemainingText;
 	zombiesRemainingText.setFont(font);
-	zombiesRemainingText.setCharacterSize(50);
+	zombiesRemainingText.setCharacterSize(50 * screenScaleAvg);
 	zombiesRemainingText.setFillColor(Color::White);
-	zombiesRemainingText.setPosition(975, 620);
-	zombiesRemainingText.setString("Zombies: 100");
+	//zombiesRemainingText.setPosition(975, 620);
+	zombiesRemainingText.setPosition(scaledPositionSetX(.5, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
+	zombiesRemainingText.setString("Zombies Remaining: 100");
 
 	// Wave number
 	int wave = 0;
 	Text waveNumberText;
 	waveNumberText.setFont(font);
-	waveNumberText.setCharacterSize(50);
+	waveNumberText.setCharacterSize(50 * screenScaleAvg);
 	waveNumberText.setFillColor(Color::Red);
-	waveNumberText.setPosition(750, 620);
-	waveNumberText.setString("Wave: 0");
+	//waveNumberText.setPosition(750, 620);
+	waveNumberText.setPosition(scaledPositionSetX(.4, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
+	waveNumberText.setString("Round: 0");
 
 	// Health bar
 	RectangleShape healthBar;
-	healthBar.setFillColor(Color::Red);
-	healthBar.setPosition(300, 620);
+	healthBar.setFillColor(Color::Magenta);
+	//healthBar.setPosition(300, 620);
+	healthBar.setPosition(scaledPositionSetX(.15, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
+
+	//HealthBar background
+	RectangleShape healthBarBG;
+	healthBarBG.setFillColor(Color::Red);
+	healthBarBG.setPosition(scaledPositionSetX(.15, scaledResolutionX), scaledPositionSetY(.9, scaledResolutionY));
 
 	// When did we last update the HUD?
 	int framesSinceLastHUDUpdate = 0;
@@ -248,7 +280,7 @@ int main()
 				if (state == State::PLAYING)
 				{
 					// reloading
-					if (event.key.code == Keyboard::R || event.key.code == sf::Mouse::isButtonPressed(sf::Mouse::Right))
+					if (event.key.code == Keyboard::R)
 					{
 						if (bulletsSpare >= clipSize)
 						{
@@ -416,28 +448,36 @@ int main()
 			{
 				// Prepare thelevel
 				// We will modify the next two lines later
-				arena.width = 500;
-				arena.height = 500;
+				arena.width = 1000;
+				arena.height = 1000;
 				arena.left = 0;
 				arena.top = 0;
 
 				// Pass the vertex array by reference 
 				// to the createBackground function
-				int tileSize = createBackground(background, arena);
+				int tileSize = createBackground(background, arena, screenScaleW, screenScaleH);
 
 				// Spawn the player in the middle of the arena
 				player.spawn(arena, resolution, tileSize);
 
 				// Configure the pickups
-				healthPickup.setArena(arena);
-				ammoPickup.setArena(arena);
+				healthPickup.setArena(arena,screenScaleW, screenScaleH);
+				ammoPickup.setArena(arena, screenScaleW, screenScaleH);
 
 				// Create a horde of zombies
 				numZombies = 10;
 
 				// Delete the previously allocated memory (if it exists)
 				delete[] zombies;
-				zombies = createHorde(numZombies, arena);
+				zombies = createHorde(numZombies, arena, screenScaleW, screenScaleH);
+
+				// Scale our horde of zombies
+				for (int i = 0; i < numZombies; i++)
+				{
+					zombies[i].setZombieScaleX(screenScaleW);
+					zombies[i].setZombieScaleY(screenScaleH);
+					zombies[i].updateSpriteScale();
+				}
 				numZombiesAlive = numZombies;
 
 				// Reset the clock so there isn't a frame jump
@@ -579,7 +619,9 @@ int main()
 			}
 
 			// Size the health bar
-			healthBar.setSize(Vector2f(player.getHealth() * 3, 70));
+			healthBar.setSize(Vector2f(player.getHealth() * 3 * screenScaleW, 60 * screenScaleH));
+			healthBarBG.setSize(Vector2f(player.getMaxHealth() * 3 * screenScaleW, 60 * screenScaleH));
+			
 
 			// Increment the number of frames sinc ethe last HUD calculation
 			framesSinceLastHUDUpdate++;
@@ -677,6 +719,7 @@ int main()
 			window.draw(ammoText);
 			window.draw(scoreText);
 			window.draw(highScoreText);
+			window.draw(healthBarBG);
 			window.draw(healthBar);
 			window.draw(waveNumberText);
 			window.draw(zombiesRemainingText);
@@ -717,38 +760,29 @@ ZombieArena.h Function Definitions
 ********************/
 
 
+//take in scaledResolutionX for width and then decide the percentage you want
 float scaledPositionSetX(float xpospercent, float screenwidth)
 {
 	return screenwidth * xpospercent;
 }
 
 
+//take in scaledResolutionY for width and then decide the percentage you want
 float scaledPositionSetY( float ypospercent, float screenheight)
 {
 	return screenheight * ypospercent;
 }
 
 
-float scaleObjectFloatX(float screenScale, float objectDimX)
+// take in screenScaleW and the objects x scale
+float scaleObjectX(float screenScale, float objectScaleX)
 {
-	return floor(screenScale * objectDimX);
+	return (screenScale * objectScaleX);
 }
 
 
-
-float scaleObjectFloatY(float screenScale, float objectDimY)
+// take in screenScaleH and the objects y scale
+float scaleObjectY(float screenScale, float objectScaleY)
 {
-	return floor(screenScale * objectDimY);
-}
-
-
-float scaleObjectIntX(float screenScale, int objectDimX)
-{
-	return floor(screenScale * objectDimX);
-}
-
-
-float scaleObjectIntY(float screenScale, int objectDimY)
-{
-	return floor(screenScale * objectDimY);
+	return (screenScale * objectScaleY);
 }

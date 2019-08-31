@@ -91,6 +91,24 @@ Sprite Zombie::getSprite()
 	return m_Sprite;
 }
 
+// set zombie scale X based on screen scale and optionally zombie scale
+void Zombie::setZombieScaleX(float screenScaleX, float zombieScaleX)
+{
+	m_ScaleX = screenScaleX * zombieScaleX;
+}
+
+// set zombie scale X based on screen scale and optionally zombie scale
+void Zombie::setZombieScaleY(float screenScaleY, float zombieScaleY)
+{
+	m_ScaleX = screenScaleY * zombieScaleY;
+}
+
+// update sprite scale
+void Zombie::updateSpriteScale()
+{
+	m_Sprite.setScale(m_ScaleX, m_ScaleY);
+}
+
 void Zombie::update(float elapsedTime,
 	Vector2f playerLocation)
 {

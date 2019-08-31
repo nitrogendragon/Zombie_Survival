@@ -17,6 +17,21 @@ Player::Player()
 	m_Sprite.setOrigin(25, 25);
 }
 
+void Player::setPlayerScaleX(float screenScaleX, float playerScaleX)
+{
+	m_ScaleX = screenScaleX * playerScaleX;
+}
+
+void Player::setPlayerScaleY(float screenScaleY, float playerScaleY)
+{
+	m_ScaleY = screenScaleY * playerScaleY;
+}
+
+void Player::updateSpriteScale()
+{
+	m_Sprite.setScale(m_ScaleX, m_ScaleY);
+}
+
 Player::~Player()
 {
 
@@ -86,6 +101,11 @@ Sprite Player::getSprite()
 int Player::getHealth()
 {
 	return m_Health;
+}
+
+int Player::getMaxHealth()
+{
+	return m_MaxHealth;
 }
 
 void Player::moveLeft()

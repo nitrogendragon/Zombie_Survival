@@ -3,17 +3,17 @@
 #include "CreateBackground.h"
 #include "SFML/Graphics.hpp"
 
-int createBackground(VertexArray& rVA, IntRect arena)
+int createBackground(VertexArray& rVA, IntRect arena, float screenScaleW, float screenScaleH)
 {
 	// Anything we do to rVA we are actually doing to background (in the main function)
 
 	// How big is each tile/texture
-	const int TILE_SIZE = 50;
+	const int TILE_SIZE = (int)(50 * ((screenScaleH + screenScaleW) /2));
 	const int TILE_TYPES = 3;
 	const int VERTS_IN_QUAD = 4;
 
-	int worldWidth = arena.width / TILE_SIZE;
-	int worldHeight = arena.height / TILE_SIZE;
+	int worldWidth = (int)(arena.width / TILE_SIZE);
+	int worldHeight = (int)(arena.height / TILE_SIZE);
 
 	// What type of primitive are we using?
 	rVA.setPrimitiveType(Quads);
@@ -36,6 +36,7 @@ int createBackground(VertexArray& rVA, IntRect arena)
 
 			// Define the position in the Texture to draw for current quad
 			// Either mud, stone, grass or wall
+			//under these conditions below though it will be a wall
 			if (h == 0 || h == worldHeight - 1 || w == 0 || w == worldWidth - 1)
 			{
 				// Use the wall texture

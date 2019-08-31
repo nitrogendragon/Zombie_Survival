@@ -31,6 +31,12 @@ private:
 	// How much health has it got?
 	float m_Health;
 
+	// Sprite Scale X
+	float m_ScaleX = 1;
+
+	// Sprite Scale Y
+	float m_ScaleY = 1;
+
 	// is it still alive?
 	bool m_Alive;
 
@@ -60,6 +66,15 @@ public:
 
 	// Get a copy of the sprite to draw
 	Sprite getSprite();
+
+	// set zombie scale X based on screen scale and optionally zombie scale
+	void setZombieScaleX(float screenScaleX, float zombieScaleX = 1);
+
+	// set zombie scale X based on screen scale and optionally zombie scale
+	void setZombieScaleY(float screenScaleY, float zombieScaleY = 1);
+
+	// update sprite scale
+	void updateSpriteScale();
 
 	// Update the zombie each frame
 	void update(float elapsedTime, Vector2f playerLocation);

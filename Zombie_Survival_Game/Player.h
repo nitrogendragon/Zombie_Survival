@@ -47,6 +47,12 @@ private:
 	// Speed in pixels per second
 	float m_Speed;
 
+	// X scale
+	float m_ScaleX;
+
+	// Y scale
+	float m_ScaleY;
+
 	/*
 	*************
 	Public Functions
@@ -107,6 +113,20 @@ public:
 
 	// How much health has the player currently got?
 	int getHealth();
+
+	//What is the max health we can have;
+	int getMaxHealth();
+
+	// Update our players  X scale with the screen size
+	// Takes in screen scale and optionally an additional modifier on the player
+	void setPlayerScaleX(float screenScaleX, float playerScaleX = 1);
+
+	// Update our players  X scale with the screen size
+	// Takes in screen scale and optionally an additional modifier on the player
+	void setPlayerScaleY(float screenScaleY, float playerScaleY = 1);
+
+	// Actually update the scale of the sprite
+	void updateSpriteScale();
 
 
 };
