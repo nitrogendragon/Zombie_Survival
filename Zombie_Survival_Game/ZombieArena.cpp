@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 
+
 using namespace sf;
 
 int main()
@@ -28,7 +29,7 @@ int main()
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
 
-	RenderWindow window(VideoMode(resolution.x, resolution.y),
+	RenderWindow window(VideoMode(resolution.x/2, resolution.y/2),
 		"Zombie Arena", Style::Default);
 
 	// Limit FPS 
@@ -707,4 +708,47 @@ int main()
 	}// End game loop
 	
 	return 0;
+}
+
+
+
+/*******************
+ZombieArena.h Function Definitions
+********************/
+
+
+float scaledPositionSetX(float xpospercent, float screenwidth)
+{
+	return screenwidth * xpospercent;
+}
+
+
+float scaledPositionSetY( float ypospercent, float screenheight)
+{
+	return screenheight * ypospercent;
+}
+
+
+float scaleObjectFloatX(float screenScale, float objectDimX)
+{
+	return floor(screenScale * objectDimX);
+}
+
+
+
+float scaleObjectFloatY(float screenScale, float objectDimY)
+{
+	return floor(screenScale * objectDimY);
+}
+
+
+float scaleObjectIntX(float screenScale, int objectDimX)
+{
+	return floor(screenScale * objectDimX);
+}
+
+
+float scaleObjectIntY(float screenScale, int objectDimY)
+{
+	return floor(screenScale * objectDimY);
 }
