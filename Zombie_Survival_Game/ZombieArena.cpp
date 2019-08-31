@@ -458,7 +458,7 @@ int main()
 				int tileSize = createBackground(background, arena, screenScaleW, screenScaleH);
 
 				// Spawn the player in the middle of the arena
-				player.spawn(arena, resolution, tileSize);
+				player.spawn(arena, Vector2f(scaledResolutionX,scaledResolutionY), tileSize);
 
 				// Configure the pickups
 				healthPickup.setArena(arena,screenScaleW, screenScaleH);
@@ -512,7 +512,7 @@ int main()
 
 			// Update the player
 			player.update(dtAsSeconds, Mouse::getPosition(), twokeys);
-
+			
 			// Make a note of the players new position
 			Vector2f playerPosition(player.getCenter());
 
