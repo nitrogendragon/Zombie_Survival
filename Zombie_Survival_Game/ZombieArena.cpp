@@ -61,6 +61,9 @@ int main()
 	// Where is the mouse in relation to screen coordinates
 	Vector2i mouseScreenPosition;
 
+	// We will hold the mouse in the center of the screen so it can't interact with other windows outside our game
+	Vector2i mouseLockedPosition = Vector2i(resolution.x/2,resolution.y/2);
+
 	// Create an instance of the Player class and scale it to the screen
 	Player player;
 	player.setPlayerScaleX(screenScaleW);
@@ -260,6 +263,9 @@ int main()
 					state == State::PLAYING)
 				{
 					state = State::PAUSED;
+					//centerMouse(resolution.x, resolution.y);
+					//cout << "Screen Position is: "<< mouseScreenPosition.x << "," << mouseScreenPosition.y << "  World is:" 
+						//<< mouseWorldPosition.x << "," << mouseWorldPosition.y << endl;
 				}
 
 				// Restart while paused
@@ -418,36 +424,43 @@ int main()
 			if (event.key.code == Keyboard::Num1)
 			{
 				state = State::PLAYING;
+				
 			}
 
 			if (event.key.code == Keyboard::Num2)
 			{
 				state = State::PLAYING;
+				
+				
 			}
 
 			if (event.key.code == Keyboard::Num3)
 			{
 				state = State::PLAYING;
+				
 			}
 
 			if (event.key.code == Keyboard::Num4)
 			{
 				state = State::PLAYING;
+				
 			}
 
 			if (event.key.code == Keyboard::Num5)
 			{
 				state = State::PLAYING;
+				
 			}
 
 			if (event.key.code == Keyboard::Num6)
 			{
-			state = State::PLAYING;
+				state = State::PLAYING;
+				
 			}
 
 			if (state == State::PLAYING)
 			{
-				// Prepare thelevel
+				// Prepare the level
 				// We will modify the next two lines later
 				arena.width = 1000 * screenScaleW;
 				arena.height = 1000 * screenScaleH;
@@ -500,19 +513,22 @@ int main()
 			// Make a decimal fraction of 1 from the delta time
 			float dtAsSeconds = dt.asSeconds();
 
-			// Where is the mouse pointer
-			mouseScreenPosition = Mouse::getPosition();
-
-
+			// Update the mouse screen position based on how much it moved since the last frame
+			//if it hasn't moved then our extra subtraction should take care of that
+			mouseScreenPosition.x += Mouse::getPosition().x - (int)(resolution.x / 2);
+			mouseScreenPosition.y += Mouse::getPosition().y - (int)(resolution.y / 2);
+			//put the mouse back into the center of the game window
+			Mouse::setPosition(mouseLockedPosition);
+			
 			// Convert mouse position to world coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(
-				Mouse::getPosition(), mainView);
+				mouseScreenPosition, mainView);
 
 			// Set the crosshair to the mouse world location
 			spriteCrosshair.setPosition(mouseWorldPosition);
 
 			// Update the player
-			player.update(dtAsSeconds, Mouse::getPosition(), twokeys);
+			player.update(dtAsSeconds, mouseScreenPosition, twokeys);
 			
 			// Make a note of the players new position
 			Vector2f playerPosition(player.getCenter());
@@ -787,3 +803,17 @@ float scaleObjectY(float screenScale, float objectScaleY)
 {
 	return (screenScale * objectScaleY);
 }
+
+
+
+void centerMouse(int xResolution, int yResolution)
+{
+	Mouse::setPosition(Vector2i(xResolution / 2, yResolution / 2));
+}
+
+
+
+//Vector2i calcMouseMovement(Vector2i newPosition, Vector2i mouseScreenPosition)
+//{
+//
+//}

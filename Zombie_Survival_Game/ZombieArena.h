@@ -20,3 +20,9 @@ float scaleObjectX(float screenScale, float objectScaleX);
 
 // Scales objects y dimensions based on screens scale(for ints)
 float scaleObjectY(float screenScale, float objectScaleY);
+
+//center the mouse
+void centerMouse(int xResolution, int yResolution);
+
+// takes the amount of screen pixels our mouse moved and adds the difference to our "fake" mouseScreenPosition
+Vector2i calcMouseMovement(Vector2i newPosition);
