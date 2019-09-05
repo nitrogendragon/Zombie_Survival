@@ -97,10 +97,10 @@ void Zombie::setZombieScaleX(float screenScaleX, float zombieScaleX)
 	m_ScaleX = screenScaleX * zombieScaleX;
 }
 
-// set zombie scale X based on screen scale and optionally zombie scale
+// set zombie scale Y based on screen scale and optionally zombie scale
 void Zombie::setZombieScaleY(float screenScaleY, float zombieScaleY)
 {
-	m_ScaleX = screenScaleY * zombieScaleY;
+	m_ScaleY = screenScaleY * zombieScaleY;
 }
 
 // update sprite scale
