@@ -263,9 +263,6 @@ int main()
 					state == State::PLAYING)
 				{
 					state = State::PAUSED;
-					//centerMouse(resolution.x, resolution.y);
-					//cout << "Screen Position is: "<< mouseScreenPosition.x << "," << mouseScreenPosition.y << "  World is:" 
-						//<< mouseWorldPosition.x << "," << mouseWorldPosition.y << endl;
 				}
 
 				// Restart while paused
@@ -513,12 +510,15 @@ int main()
 			// Make a decimal fraction of 1 from the delta time
 			float dtAsSeconds = dt.asSeconds();
 
-			// Update the mouse screen position based on how much it moved since the last frame
-			//if it hasn't moved then our extra subtraction should take care of that
-			mouseScreenPosition.x += Mouse::getPosition().x - (int)(resolution.x / 2);
-			mouseScreenPosition.y += Mouse::getPosition().y - (int)(resolution.y / 2);
-			//put the mouse back into the center of the game window
-			Mouse::setPosition(mouseLockedPosition);
+			//// Update the mouse screen position based on how much it moved since the last frame
+			////if it hasn't moved then our extra subtraction should take care of that
+			//mouseScreenPosition.x += Mouse::getPosition().x - (int)(resolution.x / 2);
+			//mouseScreenPosition.y += Mouse::getPosition().y - (int)(resolution.y / 2);
+			////put the mouse back into the center of the game window
+			//Mouse::setPosition(mouseLockedPosition);
+
+			calcMouseMovement(mouseScreenPosition, resolution.x, resolution.y);
+			centerMouse(mouseLockedPosition);
 			
 			// Convert mouse position to world coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(
@@ -805,15 +805,21 @@ float scaleObjectY(float screenScale, float objectScaleY)
 }
 
 
-
-void centerMouse(int xResolution, int yResolution)
+//put the mouse back into the center of the game window
+void centerMouse(Vector2i screenCenter)
 {
-	Mouse::setPosition(Vector2i(xResolution / 2, yResolution / 2));
+	Mouse::setPosition(screenCenter);
 }
 
 
 
-//Vector2i calcMouseMovement(Vector2i newPosition, Vector2i mouseScreenPosition)
-//{
-//
-//}
+// Update the mouse screen position based on how much it moved since the last frame
+//if it hasn't moved then our extra subtraction should take care of that
+//Note we are passing our newPosition aka mouseScreenPosition by reference so we can update it
+void calcMouseMovement(Vector2i& newPosition,  int xResolution, int yResolution) 
+{
+	newPosition.x += Mouse::getPosition().x - (int)(xResolution / 2);
+	newPosition.y += Mouse::getPosition().y - (int)(yResolution / 2);
+	//now the passed value for newPosition(mouseScreenPosition is updated and no return is required
+}
+
