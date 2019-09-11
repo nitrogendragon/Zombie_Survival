@@ -11,7 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <assert.h>
-
+#include <fstream>
 
 using namespace sf;
 
@@ -190,6 +190,15 @@ int main()
 	scoreText.setFillColor(Color::White);
 	//scoreText.setPosition(20, 0);
 	scoreText.setPosition(scaledPositionSetX(.05, scaledResolutionX), scaledPositionSetY(0, scaledResolutionY));
+
+	// Load the high score from a text file/
+	std::ifstream inputFile("gamedata/scores.txt");
+	if (inputFile.is_open())
+	{
+		inputFile >> highScore;
+		inputFile.close();
+	}
+
 
 	// High Score
 	Text highScoreText;
@@ -612,6 +621,9 @@ int main()
 					if (player.getHealth() <= 0)
 					{
 						state = State::GAME_OVER;
+						std::ofstream outputFile("gamedata/scores.txt");
+						outputFile << highScore;
+						outputFile.close();
 
 					}
 				}

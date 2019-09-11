@@ -14,11 +14,11 @@ float scaledPositionSetX(float xpospercent, float screenwidth);
 float scaledPositionSetY(float ypospercent, float screenheight);
 
 
-// Scales objects x dimensions based on screens scale(for ints)
+// Scales objects x dimensions based on screens scale
 float scaleObjectX(float screenScale, float objectScaleX);
 
 
-// Scales objects y dimensions based on screens scale(for ints)
+// Scales objects y dimensions based on screens scale
 float scaleObjectY(float screenScale, float objectScaleY);
 
 //center the mouse
