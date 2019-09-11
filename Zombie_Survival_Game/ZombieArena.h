@@ -3,7 +3,7 @@
 #include <cmath>
 #include "Zombie.h"
 using namespace sf;
-Zombie* createHorde(int numZombies, IntRect arena, float screenScaleW, float screenScaleH);
+Zombie* createHorde(int numZombies, IntRect arena, float screenScaleW, float screenScaleH, float screenScaleAvg);
 //will set xpos of object based on resolution/window size...
 //meant for text objects, HUD, UI, etc...
 float scaledPositionSetX(float xpospercent, float screenwidth);

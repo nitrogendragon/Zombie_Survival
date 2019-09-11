@@ -81,7 +81,7 @@ int main()
 		"graphics/background_sheet.png");
 
 	// Prepare for a horde of zombies
-	int numZombies;
+	int numZombies = 0;
 	int numZombiesAlive;
 	Zombie* zombies = NULL;
 
@@ -269,7 +269,7 @@ int main()
 
 	// Prepare the reolad sound
 	SoundBuffer reloadBuffer;
-	reloadBuffer.loadFromMemory("sound/reload.wav");
+	reloadBuffer.loadFromFile("sound/reload.wav");
 	Sound reload;
 	reload.setBuffer(reloadBuffer);
 
@@ -331,6 +331,18 @@ int main()
 					state == State::GAME_OVER)
 				{
 					state = State::LEVELING_UP;
+					wave = 0;
+					score = 0;
+
+					//Prepare the gun and ammo for the next game
+					currentBullet = 0;
+					bulletsSpare = 24;
+					bulletsInClip = 6;
+					clipSize = 6;
+					fireRate = 1;
+
+					// Reset the player's stats
+					player.resetPlayerStats(screenScaleAvg);
 				}
 
 				if (state == State::PLAYING)
@@ -472,12 +484,16 @@ int main()
 			// Handle the player levelling up
 			if (event.key.code == Keyboard::Num1)
 			{
+				// Increase fire rate
+				fireRate++;
 				state = State::PLAYING;
 				
 			}
 
 			if (event.key.code == Keyboard::Num2)
 			{
+				// Increase clip size
+				clipSize += clipSize;
 				state = State::PLAYING;
 				
 				
@@ -485,34 +501,44 @@ int main()
 
 			if (event.key.code == Keyboard::Num3)
 			{
+				//Increase Health
+				player.upgradeHealth();
 				state = State::PLAYING;
 				
 			}
 
 			if (event.key.code == Keyboard::Num4)
 			{
+				// Increase Speed
+				player.upgradeSpeed();
 				state = State::PLAYING;
 				
 			}
 
 			if (event.key.code == Keyboard::Num5)
 			{
+				// Upgrade health Pickup
+				healthPickup.upgrade();
 				state = State::PLAYING;
 				
 			}
 
 			if (event.key.code == Keyboard::Num6)
 			{
+				// Upgrade ammo pickup
+				ammoPickup.upgrade();
 				state = State::PLAYING;
 				
 			}
 
 			if (state == State::PLAYING)
 			{
+				// Increase round (wave) number
+				wave++;
+
 				// Prepare the level
-				// We will modify the next two lines later
-				arena.width = 1000 * screenScaleW;
-				arena.height = 1000 * screenScaleH;
+				arena.width = 1000 * screenScaleW * wave;
+				arena.height = 1000 * screenScaleH * wave;
 				arena.left = 0;
 				arena.top = 0;
 
@@ -528,11 +554,13 @@ int main()
 				ammoPickup.setArena(arena, screenScaleW, screenScaleH);
 
 				// Create a horde of zombies
-				numZombies = 10;
+				
+				numZombies += (int)(5 + wave * .27);
 
 				// Delete the previously allocated memory (if it exists)
 				delete[] zombies;
-				zombies = createHorde(numZombies, arena, screenScaleW, screenScaleH);
+				zombies = createHorde(numZombies, arena, screenScaleW, screenScaleH, screenScaleAvg);
+				numZombiesAlive = numZombies;
 
 				// Scale our horde of zombies
 				for (int i = 0; i < numZombies; i++)
@@ -541,7 +569,11 @@ int main()
 					zombies[i].setZombieScaleY(screenScaleH);
 					zombies[i].updateSpriteScale();
 				}
-				numZombiesAlive = numZombies;
+
+				// Play the powerup sound
+				powerup.play();
+
+				
 
 				// Reset the clock so there isn't a frame jump
 				clock.restart();

@@ -8,7 +8,7 @@
 using namespace std;
 
 
-void Zombie::spawn(float startX, float startY, int type, int seed)
+void Zombie::spawn(float startX, float startY, int type, int seed, float screenScaleAvg)
 {
 
 	switch (type)
@@ -18,7 +18,7 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 		m_Sprite = Sprite(TextureHolder::GetTexture(
 			"graphics/bloater.png"));
 
-		m_Speed = BLOATER_SPEED;
+		m_Speed = BLOATER_SPEED * screenScaleAvg;
 		m_Health = BLOATER_HEALTH;
 		break;
 
@@ -27,7 +27,7 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 		m_Sprite = Sprite(TextureHolder::GetTexture(
 			"graphics/chaser.png"));
 
-		m_Speed = CHASER_SPEED;
+		m_Speed = CHASER_SPEED * screenScaleAvg;
 		m_Health = CHASER_HEALTH;
 		break;
 
@@ -36,7 +36,7 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 		m_Sprite = Sprite(TextureHolder::GetTexture(
 			"graphics/crawler.png"));
 
-		m_Speed = CRAWLER_SPEED;
+		m_Speed = CRAWLER_SPEED * screenScaleAvg;
 		m_Health = CRAWLER_HEALTH;
 		break;
 	}

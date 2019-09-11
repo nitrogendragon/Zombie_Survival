@@ -26,6 +26,12 @@ void Player::setPlayerScaleY(float screenScaleY, float playerScaleY)
 {
 	m_ScaleY = screenScaleY * playerScaleY;
 }
+void Player::resetPlayerStats(float screenScaleAvg)
+{
+	m_Speed = START_SPEED*screenScaleAvg;
+	m_Health = START_HEALTH;
+	m_MaxHealth = START_HEALTH;
+}
 
 void Player::updateSpriteScale()
 {

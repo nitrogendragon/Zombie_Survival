@@ -2,7 +2,7 @@
 #include "ZombieArena.h"
 #include "Zombie.h"
 
-Zombie* createHorde(int numZombies, IntRect arena, float screenScaleW, float screenScaleH)
+Zombie* createHorde(int numZombies, IntRect arena, float screenScaleW, float screenScaleH, float screenScaleAvg)
 {
 	Zombie* zombies = new Zombie[numZombies];
 
@@ -51,7 +51,7 @@ Zombie* createHorde(int numZombies, IntRect arena, float screenScaleW, float scr
 		int type = (rand() % 3);
 
 		// Spawn the new zombie into the array
-		zombies[i].spawn(x, y, type, i);
+		zombies[i].spawn(x, y, type, i, screenScaleAvg);
 		
 
 	}
