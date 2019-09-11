@@ -537,8 +537,11 @@ int main()
 				wave++;
 
 				// Prepare the level
-				arena.width = 1000 * screenScaleW * wave;
-				arena.height = 1000 * screenScaleH * wave;
+				if (wave < 3) 
+				{
+					arena.width = 1000 * screenScaleW * wave;
+					arena.height = 1000 * screenScaleH * wave;
+				}
 				arena.left = 0;
 				arena.top = 0;
 
@@ -708,7 +711,7 @@ int main()
 			if (player.getPosition().intersects
 			(healthPickup.getPosition()) && healthPickup.isSpawned())
 			{
-				std::cout << "We got some health back" << endl;
+				
 				player.increaseHealthLevel(healthPickup.gotIt());
 
 			}
@@ -717,7 +720,7 @@ int main()
 			if (player.getPosition().intersects
 			(ammoPickup.getPosition()) && ammoPickup.isSpawned())
 			{
-				std::cout << "We got some bullets back" << endl;
+				
 				bulletsSpare += ammoPickup.gotIt();
 
 			}
@@ -732,7 +735,7 @@ int main()
 			//Calculate FPS every ffpsMeasurementFrameInterval frame
 			if (framesSinceLastHUDUpdate > fpsMeasurementFrameInterval)
 			{
-				std::cout << "we are updating the HUD" << endl;
+				
 				// Update the HUD text
 				std::stringstream ssAmmo;
 				std::stringstream ssScore;

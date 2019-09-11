@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Pickup.h"
 #include "TextureHolder.h"
+#include <iostream>
 
 Pickup::Pickup(int type)
 {
@@ -47,10 +48,12 @@ void Pickup::setArena(IntRect arena, float screenScaleW, float screenScaleH)
 void Pickup::spawn()
 {
 	// Spawn at a random location
-	srand((int)time(0) / m_Type);
-	int x = (rand() % m_Arena.width);
+	
+	int extra_val = (int)( m_Type*2 * rand());
 	srand((int)time(0) * m_Type);
-	int y = (rand() % m_Arena.height);
+	int x = (int)abs((rand() * extra_val) % m_Arena.width);
+	srand((int)time(0) / m_Type*2);
+	int y = (int)abs((rand()) % m_Arena.height);
 
 	// Not currently spawned
 	//m_Spawned = false;
@@ -58,7 +61,7 @@ void Pickup::spawn()
 	m_Spawned = true;
 
 	m_Sprite.setPosition(x, y);
-	
+	cout << x << "," << y << endl;
 }
 
 FloatRect Pickup::getPosition()
