@@ -18,6 +18,7 @@ using namespace sf;
 
 int main()
 {
+	int i_looper = 0;
 	// Here is the instance of TextureHolder
 	TextureHolder holder;
 
@@ -111,9 +112,11 @@ int main()
 	bool twokeys = false;
 
 	//Create a couple pickups
+	const int numberOfPickups = 4;
 	Pickup healthPickup(1);
 	Pickup ammoPickup(2);
-
+	std::vector<Pickup> ammoPickups(numberOfPickups, Pickup(2));
+	std::vector<Pickup> healthPickups(numberOfPickups, Pickup(1));
 	//About the game
 	int score = 0;
 	int highScore = 0;
@@ -518,7 +521,10 @@ int main()
 			if (event.key.code == Keyboard::Num5)
 			{
 				// Upgrade health Pickup
-				healthPickup.upgrade();
+				for (int i = 0; i < numberOfPickups; i++)
+				{
+					healthPickups[i].upgrade();
+				}
 				state = State::PLAYING;
 				
 			}
@@ -526,7 +532,11 @@ int main()
 			if (event.key.code == Keyboard::Num6)
 			{
 				// Upgrade ammo pickup
-				ammoPickup.upgrade();
+				for (int i = 0; i < numberOfPickups; i++)
+				{
+					ammoPickups[i].upgrade();
+				}
+				
 				state = State::PLAYING;
 				
 			}
@@ -553,9 +563,11 @@ int main()
 				player.spawn(arena, Vector2f(scaledResolutionX,scaledResolutionY), tileSize);
 
 				// Configure the pickups
-				healthPickup.setArena(arena,screenScaleW, screenScaleH);
-				ammoPickup.setArena(arena, screenScaleW, screenScaleH);
-
+				for (int i = 0; i< numberOfPickups; i++)
+				{
+					healthPickups[i].setArena(arena, screenScaleW, screenScaleH);
+					ammoPickups[i].setArena(arena, screenScaleW, screenScaleH);
+				}
 				// Create a horde of zombies
 				
 				numZombies += (int)(5 + wave * .27);
@@ -642,8 +654,11 @@ int main()
 			}
 
 			// Update the pickups
-			healthPickup.update(dtAsSeconds);
-			ammoPickup.update(dtAsSeconds);
+			for (int i = 0; i < numberOfPickups; i++)
+			{
+				healthPickups[i].update(dtAsSeconds);
+				ammoPickups[i].update(dtAsSeconds);
+			}
 
 			// Collision detection
 			// Have any zombies been shot?
@@ -707,22 +722,27 @@ int main()
 				}
 			}// End player touched
 
-			 // Has the player touched health pickup
-			if (player.getPosition().intersects
-			(healthPickup.getPosition()) && healthPickup.isSpawned())
+			
+			for (int i = 0; i < numberOfPickups; i++) 
 			{
-				
-				player.increaseHealthLevel(healthPickup.gotIt());
 
-			}
+				// Has the player touched health pickup
+				if (player.getPosition().intersects
+				(healthPickups[i].getPosition()) && healthPickups[i].isSpawned())
+				{
 
-			// Has the player touched ammo pickup
-			if (player.getPosition().intersects
-			(ammoPickup.getPosition()) && ammoPickup.isSpawned())
-			{
-				
-				bulletsSpare += ammoPickup.gotIt();
+					player.increaseHealthLevel(healthPickups[i].gotIt());
 
+				}
+
+				// Has the player touched ammo pickup
+				if (player.getPosition().intersects
+				(ammoPickups[i].getPosition()) && ammoPickups[i].isSpawned())
+				{
+
+					bulletsSpare += ammoPickups[i].gotIt();
+
+				}
 			}
 
 			// Size the health bar
@@ -803,16 +823,21 @@ int main()
 
 			// Draw the player
 			window.draw(player.getSprite());
+			for (int i = 0; i < numberOfPickups; i++)
+			{
+				// Draw the pick-ups, if currently spawned
+				if (ammoPickups[i].isSpawned())
+				{
 
-			// Draw the pick-ups, if currently spawned
-			if (ammoPickup.isSpawned())
-			{
-				window.draw(ammoPickup.getSprite());
-				
-			}
-			if (healthPickup.isSpawned())
-			{
-				window.draw(healthPickup.getSprite());
+					window.draw(ammoPickups[i].getSprite());
+
+				}
+				if (healthPickups[i].isSpawned())
+				{
+
+					window.draw(healthPickups[i].getSprite());
+
+				}
 			}
 		
 			// Draw the crosshair

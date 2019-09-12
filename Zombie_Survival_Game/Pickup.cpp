@@ -49,14 +49,15 @@ void Pickup::spawn()
 {
 	// Spawn at a random location
 	
-	int extra_val = (int)( m_Type*2 * rand());
+	int extra_val = (int)(m_Type * 2 * rand());
 	srand((int)time(0) * m_Type);
+	
 	int x = (int)abs((rand() * extra_val) % m_Arena.width);
 	srand((int)time(0) / m_Type*2);
+
 	int y = (int)abs((rand()) % m_Arena.height);
 
-	// Not currently spawned
-	//m_Spawned = false;
+	
 	m_SecondsSinceSpawn = 0;
 	m_Spawned = true;
 
