@@ -358,6 +358,7 @@ int main()
 							// Plenty of bullets. Reload.
 							bulletsSpare -= clipSize - bulletsInClip;
 							bulletsInClip = clipSize;
+							reload.play();
 							
 						}
 						else if (bulletsSpare > 0)
@@ -365,10 +366,12 @@ int main()
 							// Only a few bullets left
 							bulletsInClip = bulletsSpare;
 							bulletsSpare = 0;
+							reload.play();
 						}
 						else
 						{
-							//To be added soon
+							//failed to reload
+							reloadFailed.play();
 						}
 					}
 				}
@@ -474,6 +477,8 @@ int main()
 						currentBullet = 0;
 					}
 					lastPressed = gameTimeTotal;
+
+					shoot.play();
 
 					bulletsInClip--;
 				}
@@ -691,7 +696,8 @@ int main()
 									state = State::LEVELING_UP;
 								}
 							}
-
+							// Make a play sound
+							splat.play();
 						}
 					}
 
@@ -707,7 +713,8 @@ int main()
 
 					if (player.hit(gameTimeTotal))
 					{
-						 //More here later
+						// play hit sound
+						hit.play();
 						//std::cout << "We were hit" << endl;
 					}
 
@@ -732,7 +739,8 @@ int main()
 				{
 
 					player.increaseHealthLevel(healthPickups[i].gotIt());
-
+					// Play a sound
+					pickup.play();
 				}
 
 				// Has the player touched ammo pickup
@@ -741,7 +749,8 @@ int main()
 				{
 
 					bulletsSpare += ammoPickups[i].gotIt();
-
+					// Play a sound
+					reload.play();
 				}
 			}
 
